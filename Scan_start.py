@@ -1,12 +1,28 @@
 from sslscan import heartbleed
+from sslscan import beast
 import tkinter
+import urllib
+
+def url2host(url):
+    result = urllib.parse.urlparse(url)
+    if result.netloc != '':
+        return result.netloc
+    return url
 
 # 1 = Heartbleed
-def chk_heartbleed(host):
+# 2 = Beast
+def chk_main(url, vuln):
     root.destroy() #destroy gui
-    print("Heartbleed has been choosen")
-    print("host: "+host)
-    heartbleed.check(host) #scan
+    host = url2host(url) #transfrom url to hostaddr
+
+    if vuln==1:
+        print("Heartbleed has been choosen")
+        print("host: " + host)
+        heartbleed.check(host)
+    elif vuln==2:
+        print("Beast has been choosen")
+        print("host: " + host)
+        beast.funbest(host)
 
 def center_window(root, width=300, height=200):
     # get screen width and height
@@ -36,9 +52,9 @@ def draw_gui():
     #create list of vulnerabilities
     bPanel = tkinter.Frame(root)
     bPanel.pack(fill=tkinter.X, expand=1)
-    but1 = tkinter.Button(bPanel, text = "1. Heartbleed", fg="red", command=lambda: chk_heartbleed(site_entry.get()))
+    but1 = tkinter.Button(bPanel, text = "1. Heartbleed", fg="red", command=lambda: chk_main(site_entry.get(), 1))
     but1.pack(fill=tkinter.X)
-    but2 = tkinter.Button(bPanel, text = "2. ???")
+    but2 = tkinter.Button(bPanel, text = "2. Beast", fg="red", command=lambda: chk_main(site_entry.get(), 2))
     but2.pack(fill=tkinter.X)
     but3 = tkinter.Button(bPanel, text = "3. ???")
     but3.pack(fill=tkinter.X)

