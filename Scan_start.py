@@ -1,8 +1,11 @@
 from sslscan import heartbleed
 from sslscan import beast
+from sslscan import sertificat
+from sslscan import freak
 import tkinter
 import urllib
 
+#parses url and gets the host name
 def url2host(url):
     result = urllib.parse.urlparse(url)
     if result.netloc != '':
@@ -11,6 +14,9 @@ def url2host(url):
 
 # 1 = Heartbleed
 # 2 = Beast
+# 3 = Poodle
+# 4 = Freak
+# 5 = Certificate problems
 def chk_main(url, vuln):
     root.destroy() #destroy gui
     host = url2host(url) #transfrom url to hostaddr
@@ -23,7 +29,19 @@ def chk_main(url, vuln):
         print("Beast has been choosen")
         print("host: " + host)
         beast.funbest(host)
+    elif vuln==3:
+        print("Poodle has been choosen")
+        print("Warning! Not implemented yet")
+    elif vuln==4:
+        print("Freak has been choosen")
+        print("host: " + host)
+        freak.check(host)
+    elif vuln==5:
+        print("Certificate problems has been choosen")
+        print("host: " + host)
+        sertificat.cert_info(host)
 
+#central windows of the interface
 def center_window(root, width=300, height=200):
     # get screen width and height
     screen_width = root.winfo_screenwidth()
@@ -56,11 +74,11 @@ def draw_gui():
     but1.pack(fill=tkinter.X)
     but2 = tkinter.Button(bPanel, text = "2. Beast", fg="red", command=lambda: chk_main(site_entry.get(), 2))
     but2.pack(fill=tkinter.X)
-    but3 = tkinter.Button(bPanel, text = "3. ???")
+    but3 = tkinter.Button(bPanel, text = "3. Poodle", fg="red", command=lambda: chk_main(site_entry.get(), 3))
     but3.pack(fill=tkinter.X)
-    but4 = tkinter.Button(bPanel, text = "4. ???")
+    but4 = tkinter.Button(bPanel, text = "4. Freak", fg="red", command=lambda: chk_main(site_entry.get(), 4))
     but4.pack(fill=tkinter.X)
-    but5 = tkinter.Button(bPanel, text = "5. ???")
+    but5 = tkinter.Button(bPanel, text = "5. Certificate problems", fg="red", command=lambda: chk_main(site_entry.get(), 5))
     but5.pack(fill=tkinter.X)
 
     #center window and start loop
