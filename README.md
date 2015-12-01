@@ -3,3 +3,8 @@
 Платформа: любая, это может быть как standalone-приложение, так и сервис с веб-интерфейсом.
 Разработка на питоне.
 Методология Scrum.
+
+USAGE.
+1. Install python3
+2. Install OpenSSL: pip install pyopenssl
+3. Run Scan_start.py with python3
