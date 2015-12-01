@@ -5,6 +5,6 @@
 Методология Scrum.
 
 USAGE.
-1. Install python3
-2. Install OpenSSL: pip install pyopenssl
-3. Run Scan_start.py with python3
+1. Install python3 <BR>
+2. Install OpenSSL: pip install pyopenssl <BR>
+3. Run Scan_start.py with python3 <BR>
