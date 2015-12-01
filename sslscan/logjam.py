@@ -18,6 +18,7 @@ def funlogjam(host):
     var=sslsock.cipher()
     if var!=None:
         if var[0].find(shif2,0,len(var[0]))>=0:
+            context.set_ciphers('EXPORT')
             b=True
             try:
                 sslsock.do_handshake((host, port))
