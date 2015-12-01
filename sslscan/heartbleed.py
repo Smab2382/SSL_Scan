@@ -118,7 +118,11 @@ def check(host, port=443):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     print('Connecting...')
-    s.connect((host, port))
+    try:
+        s.connect((host, port))
+    except:
+        print("Failed to connect")
+        return
 
     print('Sending Client Hello...')
     s.send(helloPacket)
