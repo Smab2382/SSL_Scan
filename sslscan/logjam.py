@@ -4,29 +4,28 @@ import socket
 import ssl
 
 def funlogjam(host):
-    shif2='DH'
     port = 443
     sock = socket.socket()
-    sslsock=ssl.SSLSocket(sock)
-    context=sslsock.context
+    ssl_sock=ssl.SSLSocket(sock,do_handshake_on_connect=False)
+    context=ssl_sock.context
+    print(ssl_sock.cipher())
     try:
-        sslsock.connect((host, port))
+        ssl_sock.connect((host, port))
+        print(ssl_sock.cipher())
+        try:
+            context.set_ciphers('EXP-EDH-RSA-DES-CBC-SHA:+EXP-EDH-DSS-DES-CBC-SHA:+EXP-ADH-DES-CBC-SHA:+EXP-ADH-RC4-MD5')
+            ssl_sock.do_handshake()
+            print(ssl_sock.cipher())
+        except ssl.SSLError:
+            print("no vulnerability server-side")
+        else:
+            print("vulnerability server-side")
     except ConnectionError:
         print("connect error")
     except ConnectionResetError:
         print("connect error")
-    var=sslsock.cipher()
-    if var!=None:
-        if var[0].find(shif2,0,len(var[0]))>=0:
-            context.set_ciphers('EXPORT')
-            b=True
-            try:
-                sslsock.do_handshake((host, port))
-            except ssl.SSLError:
-                print("no vulnerability server-side")
-                b=False
-            if b: print("vulnerability server-side")
-    print(var)
-    sslsock.close()
+    except ssl.SSLError:
+        print("no vulnerability server-side")
+    ssl_sock.close()
 
-funlogjam("yandex.ru")
+funlogjam("insidesecure.com")
