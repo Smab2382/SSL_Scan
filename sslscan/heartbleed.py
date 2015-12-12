@@ -7,6 +7,7 @@ import time
 import select
 import struct
 import urllib.parse
+from sslscan import status
 
 #binary string from hex string
 def hex2bin(x):
@@ -113,6 +114,7 @@ def exploit(s):
         return False
 
 def check(host, port=443):
+
     print("Start scan: {0} at port {1}".format(host, port))
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -122,7 +124,7 @@ def check(host, port=443):
         s.connect((host, port))
     except:
         print("Failed to connect")
-        return
+        return status.Status.stError
 
     print('Sending Client Hello...')
     s.send(helloPacket)
@@ -134,13 +136,15 @@ def check(host, port=443):
         contentType, version, payload = getTLSMessage(s)
         if contentType == None:
             print('Server closed connection without sending Server Hello.')
-            return
+            return status.Status.stError
         # Look for server hello done message.
         if contentType == 22 and payload[0] == 0x0E:
             break
 
     print('Sending heartbeat request...')
-    exploit(s)
+    if exploit(s)==False:
+        return status.Status.stOk
+    return status.Status.stVuln
 
 def main(): #for test
     url = "https://fitnessland.spb.ru"

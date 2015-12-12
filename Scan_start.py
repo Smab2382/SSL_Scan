@@ -3,6 +3,7 @@ from sslscan import beast
 from sslscan import sertificat
 from sslscan import freak
 from sslscan import logjam
+from sslscan import status
 import tkinter
 import urllib
 
@@ -17,37 +18,63 @@ def url2host(url):
 # 2 = Beast
 # 3 = Poodle
 # 4 = Freak
-# 5 = Certificate problems
-def chk_main(url, vuln):
-    root.destroy() #destroy gui
-    host = url2host(url) #transfrom url to hostaddr
+# 5 = Logjam
+# 6 = Certificate problems
+# 7 = ALL
+vulnerabilities = ['Heartbleed', 'Beast', 'Poodle', 'Freak', 'Logjam', 'Certificate']
+def chk_main(url, vuln, gui=1):
+    host = url
+    if gui==1:
+        root.destroy() #destroy gui
+        host = url2host(url) #transfrom url to hostaddr
 
     if vuln==1:
-        print("Heartbleed has been choosen")
+        print(">>>Heartbleed has been choosen<<<<")
         print("host: " + host)
-        heartbleed.check(host)
+        return heartbleed.check(host)
     elif vuln==2:
-        print("Beast has been choosen")
+        print(">>>Beast has been choosen<<<")
         print("host: " + host)
-        beast.funbest(host)
+        return beast.funbest(host)
     elif vuln==3:
-        print("Poodle has been choosen")
+        print(">>>Poodle has been choosen<<<")
         print("Warning! Not implemented yet")
+        return status.Status.stUnknown
     elif vuln==4:
-        print("Freak has been choosen")
+        print(">>>>Freak has been choosen<<<<")
         print("host: " + host)
-        freak.check(host)
+        return freak.check(host)
     elif vuln==5:
-        print("Logjam has been choosen")
+        print(">>>Logjam has been choosen<<<")
         print("host: " + host)
-        logjam.funlogjam(host)
+        return logjam.funlogjam(host)
     elif vuln==6:
-        print("Certificate problems has been choosen")
+        print(">>>Certificate problems has been choosen<<<")
         print("host: " + host)
-        sertificat.cert_info(host)
+        return sertificat.cert_info(host)
     elif vuln==7:
         print("Cheking site for the whole list of vulnerabilities")
         print("host: " + host)
+        print("\n")
+        results = [0] * 6
+
+        for i in range(1, 7):
+            results[i-1] = chk_main(host, i, 0)
+
+        print('>>>Result<<<')
+        for i in range(1, 7):
+            result = ''
+            if(results[i-1]==status.Status.stOk):
+                result = 'Not vulnerable'
+            if(results[i-1]==status.Status.stVuln):
+                result = 'Vulnerable'
+            if(results[i-1]==status.Status.stError):
+                result = 'Error'
+            if(results[i-1]==status.Status.stUnknown):
+                result = 'Unknown'
+            if(results[i-1]==None):
+                result = 'Unknown'
+            print(vulnerabilities[i-1]+' '+result)
 
 
 #central windows of the interface

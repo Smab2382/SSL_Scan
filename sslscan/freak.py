@@ -1,6 +1,7 @@
 import urllib.parse
 import socket
 from OpenSSL import SSL
+from sslscan import status
 
 
 def check(host, port=443):
@@ -18,11 +19,14 @@ def check(host, port=443):
             ssl_sock.do_handshake()
         except SSL.Error:
             print("NOT VULNERABLE")
+            return status.Status.stVuln
         else:
             print("VULNERABLE")
+            return status.Status.stOk
     except:
         ssl_sock.close()
         print("Failed to connect")
+        return status.Status.stError
 
 
 def main():
