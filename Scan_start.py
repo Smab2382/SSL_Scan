@@ -1,5 +1,6 @@
 from sslscan import heartbleed
 from sslscan import beast
+from sslscan import poodle
 from sslscan import sertificat
 from sslscan import freak
 from sslscan import logjam
@@ -25,37 +26,30 @@ vulnerabilities = ['Heartbleed', 'Beast', 'Poodle', 'Freak', 'Logjam', 'Certific
 def chk_main(url, vuln, gui=1):
     host = url
     if gui==1:
-        root.destroy() #destroy gui
+        #root.destroy() #destroy gui
         host = url2host(url) #transfrom url to hostaddr
+        print("host: " + host)
 
     if vuln==1:
         print(">>>Heartbleed has been choosen<<<<")
-        print("host: " + host)
         return heartbleed.check(host)
     elif vuln==2:
         print(">>>Beast has been choosen<<<")
-        print("host: " + host)
         return beast.funbest(host)
     elif vuln==3:
         print(">>>Poodle has been choosen<<<")
-        print("Warning! Not implemented yet")
-        return status.Status.stUnknown
+        return poodle.poodlefun(host)
     elif vuln==4:
         print(">>>>Freak has been choosen<<<<")
-        print("host: " + host)
         return freak.check(host)
     elif vuln==5:
         print(">>>Logjam has been choosen<<<")
-        print("host: " + host)
         return logjam.funlogjam(host)
     elif vuln==6:
         print(">>>Certificate problems has been choosen<<<")
-        print("host: " + host)
         return sertificat.cert_info(host)
     elif vuln==7:
-        print("Cheking site for the whole list of vulnerabilities")
-        print("host: " + host)
-        print("\n")
+        print("Cheking site for the whole list of vulnerabilities\n")
         results = [0] * 6
 
         for i in range(1, 7):
@@ -74,7 +68,7 @@ def chk_main(url, vuln, gui=1):
                 result = 'Unknown'
             if(results[i-1]==None):
                 result = 'Unknown'
-            print(vulnerabilities[i-1]+' '+result)
+            print(str(i)+'. '+vulnerabilities[i-1]+': '+result)
 
 
 #central windows of the interface
