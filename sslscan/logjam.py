@@ -2,6 +2,7 @@ __author__ = 'Smab'
 
 import socket
 import ssl
+from sslscan import status
 
 def funlogjam(host):
     port = 443
@@ -15,15 +16,17 @@ def funlogjam(host):
             context.set_ciphers('EXP-EDH-RSA-DES-CBC-SHA:+EXP-EDH-DSS-DES-CBC-SHA:+EXP-ADH-DES-CBC-SHA:+EXP-ADH-RC4-MD5')
             ssl_sock.do_handshake()
         except ssl.SSLError:
-            print("no vulnerability server-side")
+            print("NO VULNERABLE")
+            return status.Status.stOk
         else:
-            print("vulnerability server-side")
+            print("VULNERABLE")
+            return status.Status.stVuln
     except ConnectionError:
         print("connect error")
+        return status.Status.stError
     except ConnectionResetError:
         print("connect error")
-    except ssl.SSLError:
-        print("no vulnerability server-side")
+        return status.Status.stError
     ssl_sock.close()
 
 def main(): #for test
