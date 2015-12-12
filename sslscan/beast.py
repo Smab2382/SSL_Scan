@@ -21,11 +21,12 @@ def funbest(host):
         print("no vulnerability server-side")
     else:
         print("vulnerability server-side")
-        print(ssl_sock.cipher())
-        print(ssl_sock.version())
     ssl_sock.close()
 
-host = 'yandex.ru'
-funbest(host)
+def main(): #for test
+    host = 'google.ru'
+    funbest(host)
 
+if __name__ == '__main__':
+    main()
 
