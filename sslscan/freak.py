@@ -25,7 +25,7 @@ def check(host, port=443):
         print("Failed to connect")
 
 
-def main(): #for test
+def main():
     url = "https://insidesecure.com"
     host = urllib.parse.urlparse(url).netloc
     check(host)
