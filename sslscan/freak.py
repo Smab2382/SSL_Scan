@@ -2,6 +2,7 @@ import urllib.parse
 import socket
 from OpenSSL import SSL
 
+
 def check(host, port=443):
     print("Start scan: {0} at port {1}".format(host, port))
 

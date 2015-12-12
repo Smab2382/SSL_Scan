@@ -12,6 +12,7 @@ def cert_info(hostname):
         context.load_default_certs()
         context.verify_mode = ssl.CERT_REQUIRED
         conn = context.wrap_socket(socket.socket(socket.AF_INET), server_hostname=hostname)
+        cert = 0;
         try:
             conn.connect((hostname,443))
             cert = conn.getpeercert()
@@ -20,6 +21,8 @@ def cert_info(hostname):
             print ("connection refused with ",resolve_to_protocol_string(p))
         except ssl.SSLError:
             print ("handshake or so refused with ",resolve_to_protocol_string(p))
+    if cert == 0:
+        return
     dateBefore = cert["notBefore"]
     date = re.split(' +', dateBefore)
     monthB = date[0]
@@ -44,5 +47,9 @@ def resolve_to_protocol_string(protocol_int):
     if (protocol_int == 5):
         return "PROTOCOL_TSLv1.2"
 
+def main(): #for test
+    host = 'www.python.org'
+    cert_info(host)
 
-cert_info('www.python.org')
+if __name__ == '__main__':
+    main()

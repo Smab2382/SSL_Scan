@@ -2,6 +2,7 @@ from sslscan import heartbleed
 from sslscan import beast
 from sslscan import sertificat
 from sslscan import freak
+from sslscan import logjam
 import tkinter
 import urllib
 
@@ -37,9 +38,17 @@ def chk_main(url, vuln):
         print("host: " + host)
         freak.check(host)
     elif vuln==5:
+        print("Logjam has been choosen")
+        print("host: " + host)
+        logjam.funlogjam(host)
+    elif vuln==6:
         print("Certificate problems has been choosen")
         print("host: " + host)
         sertificat.cert_info(host)
+    elif vuln==7:
+        print("Cheking site for the whole list of vulnerabilities")
+        print("host: " + host)
+
 
 #central windows of the interface
 def center_window(root, width=300, height=200):
@@ -78,11 +87,15 @@ def draw_gui():
     but3.pack(fill=tkinter.X)
     but4 = tkinter.Button(bPanel, text = "4. Freak", fg="red", command=lambda: chk_main(site_entry.get(), 4))
     but4.pack(fill=tkinter.X)
-    but5 = tkinter.Button(bPanel, text = "5. Certificate problems", fg="red", command=lambda: chk_main(site_entry.get(), 5))
+    but5 = tkinter.Button(bPanel, text = "5. Logjam", fg="red", command=lambda: chk_main(site_entry.get(), 5))
     but5.pack(fill=tkinter.X)
+    but6 = tkinter.Button(bPanel, text = "6. Certificate problems", fg="red", command=lambda: chk_main(site_entry.get(), 6))
+    but6.pack(fill=tkinter.X)
+    but7 = tkinter.Button(bPanel, text = "7. Check ALL", fg="green", command=lambda: chk_main(site_entry.get(), 7))
+    but7.pack(fill=tkinter.X)
 
     #center window and start loop
-    center_window(root, 300, 200)
+    center_window(root, 300, 300)
     root.mainloop()
 
 def main():
