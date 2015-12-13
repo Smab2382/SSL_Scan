@@ -47,12 +47,15 @@ def recvall(s, length, timeout=5):
         # Wait until the socket is ready to be read
         r, w, e = select.select([s], [], [], 5)
         if s in r:
-            data = s.recv(remain)
-            # EOF?
-            if not data:
+            try:
+                data = s.recv(remain)
+                # EOF?
+                if not data:
+                    return None
+                rdata += data
+                remain -= len(data)
+            except:
                 return None
-            rdata += data
-            remain -= len(data)
     return rdata
 
 def getTLSMessage(s, fragments=1):

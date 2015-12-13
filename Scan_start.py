@@ -7,6 +7,8 @@ from sslscan import logjam
 from sslscan import status
 import tkinter
 import urllib
+import socket
+import ssl
 
 #parses url and gets the host name
 def url2host(url):
@@ -14,6 +16,17 @@ def url2host(url):
     if result.netloc != '':
         return result.netloc
     return url
+
+#checks if host is available
+def checkAccess(host):
+    try:
+        port = 443
+        sock = socket.socket()
+        ssl_sock=ssl.SSLSocket(sock)
+        ssl_sock.connect((host, port))
+        return True
+    except:
+        return False
 
 # 1 = Heartbleed
 # 2 = Beast
@@ -23,12 +36,15 @@ def url2host(url):
 # 6 = Certificate problems
 # 7 = ALL
 vulnerabilities = ['Heartbleed', 'Beast', 'Poodle', 'Freak', 'Logjam', 'Certificate']
-def chk_main(url, vuln, gui=1):
+def chk_main(url, vuln, firstLaunch=True):
     host = url
-    if gui==1:
+    if firstLaunch==True:
         #root.destroy() #destroy gui
         host = url2host(url) #transfrom url to hostaddr
         print("host: " + host)
+        if checkAccess(host)==False: #checking if site is available
+            print("SSL on this host is not available! Scan has been interrupted!")
+            return
 
     if vuln==1:
         print(">>>Heartbleed has been choosen<<<<")
@@ -53,7 +69,7 @@ def chk_main(url, vuln, gui=1):
         results = [0] * 6
 
         for i in range(1, 7):
-            results[i-1] = chk_main(host, i, 0)
+            results[i-1] = chk_main(host, i, False)
 
         print('>>>Result<<<')
         for i in range(1, 7):
@@ -94,7 +110,7 @@ def draw_gui():
 
     #create input for host
     site_entry = tkinter.Entry(root, width=50)
-    site_entry.insert(0, "https://fitnessland.spb.ru")
+    site_entry.insert(0, "www.google.com")
     site_entry.pack(fill=tkinter.X, padx=5,pady=10)
 
     #create list of vulnerabilities

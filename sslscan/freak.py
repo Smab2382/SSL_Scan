@@ -19,10 +19,10 @@ def check(host, port=443):
             ssl_sock.do_handshake()
         except SSL.Error:
             print("NOT VULNERABLE")
-            return status.Status.stVuln
+            return status.Status.stOk
         else:
             print("VULNERABLE")
-            return status.Status.stOk
+            return status.Status.stVuln
     except:
         ssl_sock.close()
         print("Failed to connect")
