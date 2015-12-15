@@ -1,7 +1,7 @@
 from sslscan import heartbleed
 from sslscan import beast
 from sslscan import poodle
-from sslscan import sertificat
+from sslscan import certificat
 from sslscan import freak
 from sslscan import logjam
 from sslscan import status
@@ -62,17 +62,32 @@ def chk_main(url, vuln, firstLaunch=True):
         print(">>>Logjam has been choosen<<<")
         return logjam.funlogjam(host)
     elif vuln==6:
-        print(">>>Certificate problems has been choosen<<<")
-        return sertificat.cert_info(host)
+        print(">>>SSL2 availability has been choosen<<<")
+        return certificat.ssl2av(host)
     elif vuln==7:
+        print(">>>SSL3 availability has been choosen<<<")
+        return certificat.ssl3av(host)
+    elif vuln==8:
+        print(">>>TLS1.0 availability has been choosen<<<")
+        return certificat.tlsav(host)
+    elif vuln==9:
+        print(">>>TLS1.1 availability has been choosen<<<")
+        return certificat.tls11av(host)
+    elif vuln==10:
+        print(">>>TLS1.2 availability has been choosen<<<")
+        return certificat.tls12av(host)
+    elif vuln==11:
+        print(">>>Certificate info has been choosen<<<")
+        return certificat.cert_info(host)
+    elif vuln==12:
         print("Cheking site for the whole list of vulnerabilities\n")
         results = [0] * 6
 
-        for i in range(1, 7):
+        for i in range(1, 12):
             results[i-1] = chk_main(host, i, False)
 
         print('>>>Result<<<')
-        for i in range(1, 7):
+        for i in range(1, 12):
             result = ''
             if(results[i-1]==status.Status.stOk):
                 result = 'Not vulnerable'
@@ -88,7 +103,7 @@ def chk_main(url, vuln, firstLaunch=True):
 
 
 #central windows of the interface
-def center_window(root, width=300, height=200):
+def center_window(root, width=300, height=500):
     # get screen width and height
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -126,10 +141,20 @@ def draw_gui():
     but4.pack(fill=tkinter.X)
     but5 = tkinter.Button(bPanel, text = "5. Logjam", fg="red", command=lambda: chk_main(site_entry.get(), 5))
     but5.pack(fill=tkinter.X)
-    but6 = tkinter.Button(bPanel, text = "6. Certificate problems", fg="red", command=lambda: chk_main(site_entry.get(), 6))
+    but6 = tkinter.Button(bPanel, text = "6. SSL2 availability", fg="red", command=lambda: chk_main(site_entry.get(), 6))
     but6.pack(fill=tkinter.X)
-    but7 = tkinter.Button(bPanel, text = "7. Check ALL", fg="green", command=lambda: chk_main(site_entry.get(), 7))
+    but7 = tkinter.Button(bPanel, text = "7.SSL3 availability", fg="red", command=lambda: chk_main(site_entry.get(), 7))
     but7.pack(fill=tkinter.X)
+    but8 = tkinter.Button(bPanel, text = "8. TLS1.0 availability", fg="red", command=lambda: chk_main(site_entry.get(), 8))
+    but8.pack(fill=tkinter.X)
+    but9 = tkinter.Button(bPanel, text = "9. TLS1.1 availability", fg="red", command=lambda: chk_main(site_entry.get(), 9))
+    but9.pack(fill=tkinter.X)
+    but10 = tkinter.Button(bPanel, text = "10. TLS1.2 availability", fg="red", command=lambda: chk_main(site_entry.get(), 10))
+    but10.pack(fill=tkinter.X)
+    but11 = tkinter.Button(bPanel, text = "11. Certificate info", fg="red", command=lambda: chk_main(site_entry.get(), 11))
+    but11.pack(fill=tkinter.X)
+    but12 = tkinter.Button(bPanel, text = "12. Check ALL", fg="green", command=lambda: chk_main(site_entry.get(), 12))
+    but12.pack(fill=tkinter.X)
 
     #center window and start loop
     center_window(root, 300, 300)
